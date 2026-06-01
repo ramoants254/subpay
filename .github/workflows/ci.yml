@@ -48,7 +48,7 @@ jobs:
 
       - name: Get Composer Cache Directory
         id: composer-cache
-        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+        run: echo "dir=$(composer --working-dir=app config cache-files-dir)" >> $GITHUB_OUTPUT
 
       - name: Cache Composer Dependencies
         uses: actions/cache@v4
@@ -58,30 +58,35 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
 
       - name: Install Composer Dependencies
-        run: composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+        run: composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist --working-dir=app
 
       - name: Setup Environment Variables
         run: |
-          cp .env.example .env
-          sed -i 's/DB_HOST=postgres/DB_HOST=127.0.0.1/g' .env
-          sed -i 's/DB_DATABASE=subpay/DB_DATABASE=subpay_test/g' .env
-          sed -i 's/DB_USERNAME=subpay/DB_USERNAME=postgres/g' .env
-          sed -i 's/REDIS_HOST=redis/REDIS_HOST=127.0.0.1/g' .env
+          cp app/.env.example app/.env
+          sed -i 's/DB_HOST=postgres/DB_HOST=127.0.0.1/g' app/.env
+          sed -i 's/DB_DATABASE=subpay/DB_DATABASE=subpay_test/g' app/.env
+          sed -i 's/DB_USERNAME=subpay/DB_USERNAME=postgres/g' app/.env
+          sed -i 's/REDIS_HOST=redis/REDIS_HOST=127.0.0.1/g' app/.env
 
       - name: Generate Encryption Key
         run: php artisan key:generate
+        working-directory: app
 
       - name: Run Database Migrations
         run: php artisan migrate --force
+        working-directory: app
 
       - name: Run Code Style Checks (Laravel Pint)
         run: ./vendor/bin/pint --test
+        working-directory: app
 
       - name: Run Static Analysis (PHPStan)
         run: ./vendor/bin/phpstan analyse
+        working-directory: app
 
       - name: Execute Tests (Pest)
         run: ./vendor/bin/pest
+        working-directory: app
 
   deploy-to-ecr:
     needs: test-and-lint
