@@ -6,6 +6,7 @@ use App\Models\Plan;
 use App\Models\Subscription;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Queue;
 
 uses(RefreshDatabase::class);
 
@@ -119,6 +120,8 @@ test('it enforces idempotency and ignores duplicate callbacks safely', function 
 });
 
 test('it transitions charges to failed and stores description on negative result code', function () {
+    Queue::fake();
+
     $failurePayload = [
         'Body' => [
             'stkCallback' => [
