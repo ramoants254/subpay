@@ -1,0 +1,52 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    user: "${UID}:${GID}"
+    container_name: subpay_app
+    restart: unless-stopped
+    command: php artisan queue:work redis --queue=billing,default --tries=3 --timeout=90
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/var/www/app
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - subpay_network
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: subpay_postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: subpay
+      POSTGRES_USER: subpay
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - subpay_network
+
+  redis:
+    image: redis:7-alpine
+    container_name: subpay_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - subpay_network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  subpay_network:
+    driver: bridge
