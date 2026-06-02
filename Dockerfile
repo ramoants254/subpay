@@ -21,8 +21,8 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/app
 
-# COPY STEP: Copy your entire codebase into the container's working directory
-COPY . /var/www/app
+# Copy the Laravel application from the repository's app/ directory.
+COPY app/ /var/www/app/
 
 # Install production composer dependencies inside the image
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progress
