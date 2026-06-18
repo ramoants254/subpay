@@ -1,0 +1,55 @@
+@import 'tailwindcss';
+
+:root {
+  color-scheme: dark;
+  --bg: #09090f;
+  --panel: rgba(12, 14, 24, 0.72);
+  --panel-border: rgba(255, 255, 255, 0.08);
+  --text: #e5eefc;
+  --muted: #94a3b8;
+  --accent: #22d3ee;
+  --accent-2: #8b5cf6;
+  font-family: 'Segoe UI Variable Display', 'Segoe UI', 'SF Pro Display', sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 18% 18%, rgba(139, 92, 246, 0.24), transparent 28%),
+    radial-gradient(circle at 82% 14%, rgba(34, 211, 238, 0.18), transparent 26%),
+    radial-gradient(circle at 50% 100%, rgba(16, 185, 129, 0.12), transparent 36%),
+    linear-gradient(180deg, #09090f 0%, #0b1020 54%, #09090f 100%);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+
+#root {
+  min-height: 100vh;
+  width: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::selection {
+  background: rgba(34, 211, 238, 0.24);
+  color: #f8fafc;
+}
+
+.text-balance {
+  text-wrap: balance;
+}

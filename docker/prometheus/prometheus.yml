@@ -1,0 +1,10 @@
+global:
+  scrape_interval: 15s # Scrape targets every 15 seconds
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'laravel-subpay'
+    metrics_path: '/prometheus'
+    static_configs:
+      # We target the 'app' container running on port 8000 inside the Docker network
+      - targets: ['app:8000']

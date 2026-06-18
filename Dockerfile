@@ -24,12 +24,13 @@ WORKDIR /var/www/app
 # Copy the Laravel application from the repository's app/ directory.
 COPY app/ /var/www/app/
 
-# Install production composer dependencies inside the image
-RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progress
+# Install production composer dependencies without executing post-autoload scripts during build
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progress --no-scripts
 
 # Set correct write permissions for Laravel storage and cache directories
 RUN chmod -R 775 /var/www/app/storage /var/www/app/bootstrap/cache
 
 EXPOSE 8000
 
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+# Execute package:discover and start serving at runtime once dependent services are available
+CMD ["sh", "-c", "php artisan package:discover --ansi && php artisan serve --host=0.0.0.0 --port=8000"]
